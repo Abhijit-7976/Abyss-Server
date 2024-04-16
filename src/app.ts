@@ -8,6 +8,7 @@ import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import path from "path";
 import globalErrorHandler from "./controllers/errorController.js";
+import authRouter from "./routes/auth.route.js";
 import userRouter from "./routes/user.route.js";
 import ApiError from "./utils/ApiError.js";
 
@@ -48,6 +49,7 @@ app.use(mongoSanitize());
 
 // Routes
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/auth", authRouter);
 
 // Not found route
 app.all("*", (req, res, next) => {

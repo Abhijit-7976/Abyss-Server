@@ -1,13 +1,5 @@
 import { Router } from "express";
 import {
-  forgotPassword,
-  login,
-  logout,
-  resetPassword,
-  signup,
-  updateUserPassword,
-} from "../controllers/auth.controller.js";
-import {
   deleteUser,
   getAllUsers,
   getUser,
@@ -21,16 +13,11 @@ import { UserRole } from "../types/user.type.js";
 
 const router = Router();
 
-router.post("/signup", signup);
-router.post("/login", login);
-router.post("/forgotPassword", forgotPassword);
-router.post("/resetPassword/:resetToken", resetPassword);
-
 // Protect all routes after this middlewares
 router.use(isAuth);
 
 router.get("/", getAllUsers);
-router.patch("/updateMyPassword", updateUserPassword);
+
 router.patch("/updateUserDetails", updateUserDetails);
 router.patch("/uploadAvatar", upload.single("avatar"), uploadAvatar);
 router.patch(
@@ -38,7 +25,7 @@ router.patch(
   upload.single("coverImage"),
   uploadCoverImage
 );
-router.get("/logout", logout);
+
 router.route("/:id").get(getUser).delete(allowFor(UserRole.ADMIN), deleteUser);
 
 export default router;
