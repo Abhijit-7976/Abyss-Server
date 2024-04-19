@@ -7,7 +7,7 @@ import ApiError from "../utils/ApiError.js";
 const handleDuplicateFields = (err: MongoServerError) => {
   const field = Object.keys(err.keyValue)[0];
   return new ApiError(
-    `Duplicate field (${field}) value: '${err.keyValue[field]}'. Please use another value!`,
+    `The ${field} with '${err.keyValue[field]}' is already taken.`,
     400
   );
 };
@@ -45,7 +45,6 @@ const sendErrorProd: ErrorRequestHandler = (err: ApiError, req, res, next) => {
       });
     } else {
       console.log("💣 ERROR \n", err);
-      console.log("💣 ERROR \n", err);
       res.status(500).json({
         message: "Something went wrong",
         status: "error",
@@ -58,11 +57,12 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let error: ApiError = new ApiError(err.message, err.statusCode || 500);
   error.isOperational = err.isOperational || false;
 
-  if (process.env.NODE_ENV === "development") {
-    console.log(err);
+  if (process.env.NODE_ENV?.trim() === "development") {
+    console.log("development error");
     console.log(err);
     sendErrorDev(error, req, res, next);
-  } else if (process.env.NODE_ENV === "production") {
+  } else if (process.env.NODE_ENV?.trim() === "production") {
+    console.log("production error");
     if (err instanceof MongoServerError && err.code === 11000)
       error = handleDuplicateFields(err);
     if (err instanceof Error.ValidationError)

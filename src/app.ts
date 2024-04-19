@@ -14,11 +14,12 @@ import ApiError from "./utils/ApiError.js";
 
 const __dirname = path.resolve();
 const app = express();
+console.log("Environment:", process.env.NODE_ENV);
 
 // Global Middlewares
 app.use(helmet());
 
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV?.trim() === "development") {
   console.log("Morgan enabled...");
   app.use(morgan("dev"));
 }

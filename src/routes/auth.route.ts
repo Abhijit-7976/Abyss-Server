@@ -6,8 +6,8 @@ import {
   resetPassword,
   signup,
   updateUserPassword,
-} from "../controllers/auth.controller";
-import { isAuth } from "../middlewares/auth.middleware";
+} from "../controllers/auth.controller.js";
+import { isAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

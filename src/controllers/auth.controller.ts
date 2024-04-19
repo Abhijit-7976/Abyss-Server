@@ -16,7 +16,10 @@ const signToken = (id: Types.ObjectId) => {
 };
 
 export const signup = catchAsync(async (req, res, next) => {
+  console.log("Signup");
   const savedUser = await User.create(req.body);
+
+  console.log(savedUser);
 
   const token = signToken(savedUser._id);
 
@@ -51,7 +54,7 @@ export const login = catchAsync(async (req, res, next) => {
   res
     .status(200)
     .cookie("token", token, cookieOptions)
-    .json(new ApiResponse(200, { token }, "Token generated."));
+    .json(new ApiResponse(200, { user, token }, "Token generated."));
 });
 
 export const logout = catchAsync(async (req: ApiRequest, res, next) => {
@@ -67,7 +70,6 @@ export const logout = catchAsync(async (req: ApiRequest, res, next) => {
     .json(new ApiResponse(200, null, "User logged out successfully"));
 });
 
-// TODO: Add forgotPassword
 export const forgotPassword = catchAsync(async (req, res, next) => {
   console.log(req.body.email);
   const user = await User.findOne({ email: req.body.email });
@@ -112,7 +114,6 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-// TODO: resetPassword
 export const resetPassword = catchAsync(async (req, res, next) => {
   const resetToken = req.params.resetToken;
   const { newPassword } = req.body;

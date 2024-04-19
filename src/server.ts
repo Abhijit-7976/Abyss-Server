@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import path from "path";
-dotenv.config({ path: "./env" });
 
 const __dirname = path.resolve();
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -13,6 +12,7 @@ process.on("uncaughtException", err => {
 });
 
 import app from "./app.js";
+
 import { connectToDb } from "./db/abyss.js";
 
 // Connect to database
