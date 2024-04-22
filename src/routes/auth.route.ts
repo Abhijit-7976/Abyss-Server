@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   forgotPassword,
+  getAuthUser,
   login,
   logout,
   resetPassword,
@@ -19,6 +20,7 @@ router.post("/resetPassword/:resetToken", resetPassword);
 // Protect all routes after this middlewares
 router.use(isAuth);
 
+router.get("/me", getAuthUser);
 router.patch("/updateMyPassword", updateUserPassword);
 router.get("/logout", logout);
 

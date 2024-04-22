@@ -15,6 +15,14 @@ const signToken = (id: Types.ObjectId) => {
   });
 };
 
+export const getAuthUser = catchAsync(async (req: ApiRequest, res, next) => {
+  if (req.user) {
+    res
+      .status(200)
+      .json(new ApiResponse(200, { user: req.user }, "Logged in user"));
+  }
+});
+
 export const signup = catchAsync(async (req, res, next) => {
   console.log("Signup");
   const savedUser = await User.create(req.body);
