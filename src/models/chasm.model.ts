@@ -38,22 +38,10 @@ const chasmSchema = new Schema<ChasmDocument, ChasmModel>(
       required: [true, "Please provide a creator for the chasm"],
     },
     members: [memberSchema],
-    blockedUsers: [
+    messages: [
       {
         type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    textChannels: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Channel",
-      },
-    ],
-    voiceChannels: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Channel",
+        ref: "Message",
       },
     ],
   },

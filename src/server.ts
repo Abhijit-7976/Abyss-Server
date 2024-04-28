@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
+import http from "http";
 import path from "path";
+import { Server } from "socket.io";
 
 const __dirname = path.resolve();
 dotenv.config({ path: path.join(__dirname, ".env") });
@@ -12,16 +14,29 @@ process.on("uncaughtException", err => {
 });
 
 import app from "./app.js";
+const server = http.createServer(app);
 
 import { connectToDb } from "./db/abyss.js";
+import { connectMediasoupService } from "./services/mediasoup/mediasoup.js";
+import { connectChatService } from "./services/messages/chats.js";
 
 // Connect to database
 connectToDb();
 
+// Mediasoup and WebSocket
+
+const io = new Server(server, {
+  path: "/ws",
+  cors: { origin: "*" },
+});
+
+connectMediasoupService(io);
+connectChatService(io);
+
 // Start server
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
+server.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}...`);
 });
 

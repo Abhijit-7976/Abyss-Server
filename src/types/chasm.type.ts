@@ -18,9 +18,7 @@ export interface IChasm {
   image?: string;
   creator: Types.ObjectId;
   members: Types.DocumentArray<IMember>;
-  blockedUsers?: Types.ObjectId[];
-  textChannels: Types.ObjectId[];
-  voiceChannels: Types.ObjectId[];
+  messages?: Types.ObjectId[];
 }
 
 export interface ChasmMethods {}
