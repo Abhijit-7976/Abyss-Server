@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
+  addFriend,
   deleteUser,
   getAllUsers,
+  getFriends,
   getUser,
   updateUserDetails,
   uploadAvatar,
@@ -17,6 +19,8 @@ const router = Router();
 router.use(isAuth);
 
 router.get("/", getAllUsers);
+router.get("/friends", getFriends);
+router.post("/addFriend/:friendUsername", addFriend);
 
 router.patch("/updateUserDetails", updateUserDetails);
 router.patch("/uploadAvatar", upload.single("avatar"), uploadAvatar);

@@ -1,3 +1,4 @@
+import path from "path";
 import User from "../models/user.model.js";
 import { ApiRequest } from "../types/auth.type.js";
 import ApiError from "../utils/ApiError.js";
@@ -69,6 +70,65 @@ export const uploadCoverImage = catchAsync(
   }
 );
 
-export const getAllUsers = findAll(User);
+export const addFriend = catchAsync(async (req: ApiRequest, res, next) => {
+  const user = await User.findById(req.user?._id);
+  const friend = await User.findOne({ username: req.params.friendUsername });
+
+  if (!user || !friend) throw new ApiError("No user found", 404);
+
+  if (user.friends.includes(friend._id))
+    throw new ApiError("User is already a friend", 400);
+
+  user.friends.push(friend._id);
+  friend.friends.push(user._id);
+
+  await user.save();
+  await friend.save();
+
+  res.status(200).json(new ApiResponse(200, { user }, "Friend added"));
+});
+
+export const getFriends = catchAsync(async (req: ApiRequest, res, next) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  const search = (req.query.search as string) || "";
+
+  const user = await User.findById(req.user?._id).populate({
+    path: "friends",
+    match: { username: new RegExp(search, "i") },
+    options: { skip: (page - 1) * limit, limit: limit + 1 },
+  });
+
+  if (!user) throw new ApiError("No user found", 404);
+
+  const isLast = user.friends.length <= limit;
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { page, isLast, friends: user.friends },
+        "Friends found"
+      )
+    );
+});
+
+export const getAllUsers = catchAsync(async (req: ApiRequest, res, next) => {
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 20;
+  const search = (req.query.search as string) || "";
+
+  const users = await User.find({ username: new RegExp(search, "i") })
+    .skip((page - 1) * limit)
+    .limit(limit + 1);
+
+  const isLast = users.length <= limit;
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, { page, isLast, users }, "Users found"));
+});
+
 export const getUser = findOne(User);
 export const deleteUser = deleteOne(User);

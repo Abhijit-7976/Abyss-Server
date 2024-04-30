@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Query, Schema, model } from "mongoose";
 import { IMessage, MessageDocument, MessageModel } from "../types/message.type";
 
 const messageSchema = new Schema<MessageDocument, MessageModel>(
@@ -8,14 +8,15 @@ const messageSchema = new Schema<MessageDocument, MessageModel>(
       ref: "User",
       required: [true, "Please provide a sender!"],
     },
-    receiver: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-    },
     text: String,
     attachments: [String],
   },
   { timestamps: true }
 );
+
+messageSchema.pre(/^find/, function (next) {
+  if (this instanceof Query) this.select("-__v");
+  next();
+});
 
 export default model<MessageDocument, MessageModel>("Message", messageSchema);

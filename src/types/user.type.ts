@@ -1,4 +1,5 @@
 import { Document, Model, Types } from "mongoose";
+import { ChatDocument } from "./chat.type";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -13,6 +14,9 @@ export interface IUser {
   password: string;
   role: UserRole;
   dob: Date;
+  friends: Types.ObjectId[];
+  privateChats: Types.DocumentArray<ChatDocument>;
+  groupChats: Types.DocumentArray<ChatDocument>;
   passwordChangedAt?: Date;
   passwordResetToken?: string;
   resetTokenExpires?: Date;

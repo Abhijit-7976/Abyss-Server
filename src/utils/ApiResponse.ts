@@ -2,7 +2,7 @@ export class ApiResponse {
   status: "success" = "success";
   constructor(
     public statusCode: number,
-    public data: {} | [] | null,
+    public data: object | [] | null,
     public message: string
   ) {}
 }

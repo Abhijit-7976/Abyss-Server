@@ -40,6 +40,24 @@ const userSchema = new Schema<UserDocument, UserModel>(
       default: UserRole.USER,
     },
     dob: Date,
+    friends: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    privateChats: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Chat",
+      },
+    ],
+    groupChats: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Chat",
+      },
+    ],
     passwordChangedAt: {
       type: Date,
       select: false,
