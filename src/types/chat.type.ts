@@ -13,12 +13,13 @@ import { Document, Model, Types } from "mongoose";
 // }
 
 export interface IChat {
+  _id: Types.ObjectId;
   type: "private" | "group";
   name?: string;
   description?: string;
   image?: string;
   members: Types.ObjectId[];
-  messages?: Types.ObjectId[];
+  messages: Types.ObjectId[];
 }
 
 export interface ChatMethods {}

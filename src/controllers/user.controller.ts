@@ -89,8 +89,8 @@ export const addFriend = catchAsync(async (req: ApiRequest, res, next) => {
 });
 
 export const getFriends = catchAsync(async (req: ApiRequest, res, next) => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 20;
+  const page = req.query.page ? +req.query.page : 1;
+  const limit = req.query.limit ? +req.query.limit : 20;
   const search = (req.query.search as string) || "";
 
   const user = await User.findById(req.user?._id).populate({
@@ -102,6 +102,7 @@ export const getFriends = catchAsync(async (req: ApiRequest, res, next) => {
   if (!user) throw new ApiError("No user found", 404);
 
   const isLast = user.friends.length <= limit;
+  if (!isLast) user.friends.pop();
 
   return res
     .status(200)
@@ -115,20 +116,51 @@ export const getFriends = catchAsync(async (req: ApiRequest, res, next) => {
 });
 
 export const getAllUsers = catchAsync(async (req: ApiRequest, res, next) => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 20;
+  const page = req.query.page ? +req.query.page : 1;
+  const limit = req.query.limit ? +req.query.limit : 20;
   const search = (req.query.search as string) || "";
 
-  const users = await User.find({ username: new RegExp(search, "i") })
+  const users = await User.find({
+    $and: [
+      { username: new RegExp(search, "i") },
+      { _id: { $ne: req.user?._id } },
+    ],
+  })
     .skip((page - 1) * limit)
     .limit(limit + 1);
 
   const isLast = users.length <= limit;
+  if (!isLast) users.pop();
 
   res
     .status(200)
     .json(new ApiResponse(200, { page, isLast, users }, "Users found"));
 });
+
+export const getAllUnknownUsers = catchAsync(
+  async (req: ApiRequest, res, next) => {
+    const page = req.query.page ? +req.query.page : 1;
+    const limit = req.query.limit ? +req.query.limit : 20;
+    const search = (req.query.search as string) || "";
+
+    const users = await User.find({
+      $and: [
+        { username: new RegExp(search, "i") },
+        { _id: { $ne: req.user?._id } },
+        { _id: { $nin: req.user?.friends } },
+      ],
+    })
+      .skip((page - 1) * limit)
+      .limit(limit + 1);
+
+    const isLast = users.length <= limit;
+    if (!isLast) users.pop();
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, { page, isLast, users }, "Users found"));
+  }
+);
 
 export const getUser = findOne(User);
 export const deleteUser = deleteOne(User);

@@ -16,11 +16,11 @@ const signToken = (id: Types.ObjectId) => {
 };
 
 export const getAuthUser = catchAsync(async (req: ApiRequest, res, next) => {
-  if (req.user) {
-    res
-      .status(200)
-      .json(new ApiResponse(200, { user: req.user }, "Logged in user"));
-  }
+  if (!req.user) throw new ApiError("User not found", 404);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, { user: req.user }, "Logged in user"));
 });
 
 export const signup = catchAsync(async (req, res, next) => {
@@ -150,7 +150,6 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     .json(new ApiResponse(200, { savedUser }, "Password reset successfully"));
 });
 
-// TODO: updatePassword
 export const updateUserPassword = catchAsync(
   async (req: ApiRequest, res, next) => {
     const loggedInUser = req.user!;

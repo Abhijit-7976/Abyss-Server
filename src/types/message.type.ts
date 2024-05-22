@@ -1,6 +1,7 @@
 import { Document, Model, Types } from "mongoose";
 
 export interface IMessage {
+  _id: Types.ObjectId;
   sender: Types.ObjectId;
   text?: string;
   attachments?: string[];

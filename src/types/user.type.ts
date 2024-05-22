@@ -11,7 +11,7 @@ export interface IUser {
   avatar?: string;
   coverImage?: string;
   email: string;
-  password: string;
+  password?: string;
   role: UserRole;
   dob: Date;
   friends: Types.ObjectId[];

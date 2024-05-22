@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   addFriend,
   deleteUser,
+  getAllUnknownUsers,
   getAllUsers,
   getFriends,
   getUser,
@@ -19,6 +20,7 @@ const router = Router();
 router.use(isAuth);
 
 router.get("/", getAllUsers);
+router.get("/unknown", getAllUnknownUsers);
 router.get("/friends", getFriends);
 router.post("/addFriend/:friendUsername", addFriend);
 

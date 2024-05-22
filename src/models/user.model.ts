@@ -78,7 +78,7 @@ userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.passwordChangedAt = new Date(Date.now() - 1000);
 
-  this.password = await bcrypt.hash(this.password, +process.env.SALT_ROUNDS!);
+  this.password = await bcrypt.hash(this.password!, +process.env.SALT_ROUNDS!);
   this.passwordChangedAt = new Date(Date.now() - 1000);
 
   next();

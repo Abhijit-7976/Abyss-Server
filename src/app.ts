@@ -27,7 +27,7 @@ if (process.env.NODE_ENV?.trim() === "development") {
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  limit: 100,
+  limit: 500, // for development, change to 100 in production
   standardHeaders: "draft-7",
   legacyHeaders: false,
   message:

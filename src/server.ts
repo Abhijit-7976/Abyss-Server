@@ -17,8 +17,8 @@ import app from "./app.js";
 const server = http.createServer(app);
 
 import { connectToDb } from "./db/abyss.js";
-import { connectMediasoupService } from "./services/mediasoup/mediasoup.js";
-import { connectChatService } from "./services/messages/chats.js";
+import { connectMediasoupService } from "./services/mediasoup/mediasoup.ws.js";
+import { connectChatService } from "./services/messages/chats.ws.js";
 
 // Connect to database
 connectToDb();

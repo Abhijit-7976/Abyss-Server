@@ -21,12 +21,15 @@ export const isAuth = catchAsync(async (req: ApiRequest, res, next) => {
       "User belonging to this token does no longer exist",
       401
     );
-  console.log(decoded);
+
   if (user.checkPasswordChangedAfter(new Date(decoded.iat! * 1000)))
     throw new ApiError(
       "User recently changed password. Please login again",
       401
     );
+
+  user.password = undefined;
+  user.passwordChangedAt = undefined;
 
   req.user = user;
   next();
