@@ -63,6 +63,7 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     sendErrorDev(error, req, res, next);
   } else if (process.env.NODE_ENV?.trim() === "production") {
     console.log("production error");
+    console.log(err);
     if (err instanceof MongoServerError && err.code === 11000)
       error = handleDuplicateFields(err);
     if (err instanceof Error.ValidationError)
