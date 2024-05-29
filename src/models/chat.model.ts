@@ -34,6 +34,7 @@ const chatSchema = new Schema<ChatDocument, ChatModel>(
     name: {
       type: String,
       unique: true,
+      required: [true, "Please provide a name for the chat"],
     },
     description: String,
     image: String,

@@ -8,6 +8,7 @@ import { uploadToCloudinary } from "../utils/cloudinary.js";
 import { deleteOne, findAll, findOne } from "./handleFactory.js";
 
 // Do not update password
+// Do not upload avatar and cover image
 export const updateUserDetails = catchAsync(
   async (req: ApiRequest, res, next) => {
     const user = await User.findById(req.user?._id);

@@ -13,13 +13,14 @@ import catchAsync from "../utils/catchAsync.js";
 // Create a private chat
 export const createPrivateChat = catchAsync(
   async (req: ApiRequest, res, next) => {
-    const friendId = req.body.friendId;
-    const message = req.body.message;
+    const { friendId, message } = req.body;
 
     const user = await User.findById(req.user?._id);
     const friend = await User.findById(friendId);
 
     if (!user || !friend) return next(new ApiError("No user found", 404));
+
+    if (!message) return next(new ApiError("Please provide a message", 400));
 
     const chat1 = await Chat.findOne({
       $or: [
@@ -64,10 +65,12 @@ export const createPrivateChat = catchAsync(
 // Create a group chat
 export const createGroupChat = catchAsync(
   async (req: ApiRequest, res, next) => {
-    const { name, friendIds } = req.body;
+    const { name, friendIds, message } = req.body;
 
     const user = await User.findById(req.user?._id);
     if (!user) return next(new ApiError("No user found", 404));
+
+    if (!message) return next(new ApiError("Please provide a message", 400));
 
     const members: Array<UserDocument> = [];
 
@@ -78,10 +81,17 @@ export const createGroupChat = catchAsync(
       members.push(friend);
     }
 
+    // First message
+    const newMessage = await Message.create({
+      sender: user._id,
+      text: message,
+    });
+
     const groupChat = await Chat.create({
       name,
       type: "group",
       members: [user._id, ...friendIds],
+      messages: [newMessage._id],
     });
 
     user.groupChats.push(groupChat);

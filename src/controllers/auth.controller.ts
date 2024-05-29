@@ -158,11 +158,10 @@ export const updateUserPassword = catchAsync(
 
     const user = await User.findById(loggedInUser._id).select("+password");
 
-    if (!user || !(await user.checkPassword(req.body.currentPassword)))
-      throw new ApiError(
-        `User no longer exists or current password is incorrect`,
-        404
-      );
+    if (!user) throw new ApiError("No user found", 404);
+
+    if (!(await user.checkPassword(req.body.currentPassword)))
+      throw new ApiError(`current password is incorrect`, 404);
 
     user.password = req.body.newPassword;
     const updatedUser = await user.save({ validateModifiedOnly: true });

@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { type Server, type Socket } from "socket.io";
 import { addMessageToDb } from "../../controllers/message.controller.js";
-import { IChat } from "../../types/chat.type";
+import { ChatDocument, IChat } from "../../types/chat.type";
 
 const socketToUser = new Map<string, string>();
 const userToSocket = new Map<string, string>();
@@ -35,6 +35,23 @@ export function connectChatService(io: Server) {
 
       callback({ chat, message });
     });
+
+    // new chat created
+    socket.on(
+      "chat:create",
+      ({ userId, chat }: { userId: string; chat: ChatDocument }) => {
+        console.log("📱📤 chat create:", { userId, chat });
+
+        chat.members.forEach((member: Types.ObjectId) => {
+          if (userId === member.toString()) return;
+
+          const memberSocket = userToSocket.get(member.toString());
+          if (memberSocket) {
+            socket.to(memberSocket).emit("chat:new", chat);
+          }
+        });
+      }
+    );
 
     socket.on("disconnect", () => {
       console.log("📱❌ chats client disconnected...");

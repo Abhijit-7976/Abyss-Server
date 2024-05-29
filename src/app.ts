@@ -49,6 +49,10 @@ app.use(express.json({ limit: "16kb" }));
 // Data Sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
+app.get("/", (req, res) => {
+  res.send("Server is running!");
+});
+
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);

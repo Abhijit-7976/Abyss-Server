@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "SET NODE_ENV=development && nodemon ./dist/server.js",
     "prod": "SET NODE_ENV=production && nodemon dist/server.js",
-    "tsc": "tsc -w"
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "watch": "tsc -w"
   },
   "author": "Abhijit Mahato",
   "license": "ISC",
