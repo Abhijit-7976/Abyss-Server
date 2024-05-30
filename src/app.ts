@@ -18,7 +18,16 @@ const app = express();
 console.log("Environment:", process.env.NODE_ENV);
 
 // Global Middlewares
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "img-src": ["'self'", "https: data:"],
+      },
+    },
+  })
+);
 
 if (process.env.NODE_ENV?.trim() === "development") {
   console.log("Morgan enabled...");
@@ -27,7 +36,7 @@ if (process.env.NODE_ENV?.trim() === "development") {
 
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  limit: 500, // for development, change to 100 in production
+  limit: 100, // for development, change to 100 in production
   standardHeaders: "draft-7",
   legacyHeaders: false,
   message:
@@ -37,7 +46,7 @@ app.use("/api", limiter);
 
 app.use(
   cors({
-    origin: process.env.CROSS_ORIGIN,
+    origin: process.env.CROSS_ORIGIN || false,
     credentials: true,
   })
 );
@@ -49,14 +58,25 @@ app.use(express.json({ limit: "16kb" }));
 // Data Sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-app.get("/", (req, res) => {
-  res.send("Server is running!");
-});
+const _dirname = path.dirname("");
+
+app.use(express.static(path.join(_dirname, "../Client/dist")));
 
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/chats", chatRouter);
+
+app.get("/*", function (req, res) {
+  res.sendFile(
+    path.join(__dirname, "../Client/dist/index.html"),
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
+      }
+    }
+  );
+});
 
 // Not found route
 app.all("*", (req, res, next) => {
