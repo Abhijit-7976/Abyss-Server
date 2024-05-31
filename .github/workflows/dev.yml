@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-              cd /home/ubuntu/abyss_app &&
+              cd /home/ubuntu/abyss_app/Server &&
               git checkout main &&
               git fetch --all &&
               git reset --hard origin/main &&
