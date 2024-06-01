@@ -7,13 +7,16 @@ import morgan from "morgan";
 import { rateLimit } from "express-rate-limit";
 import helmet from "helmet";
 import path from "path";
+import { fileURLToPath } from "url";
 import globalErrorHandler from "./controllers/errorController.js";
 import authRouter from "./routes/auth.route.js";
 import chatRouter from "./routes/chat.route.js";
 import userRouter from "./routes/user.route.js";
 import ApiError from "./utils/ApiError.js";
 
-const __dirname = path.resolve();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 console.log("Environment:", process.env.NODE_ENV);
 
@@ -58,25 +61,23 @@ app.use(express.json({ limit: "16kb" }));
 // Data Sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-const _dirname = path.dirname("");
-
-app.use(express.static(path.join(_dirname, "../Client/dist")));
+// app.use(express.static(path.join(__dirname, "..", "..", "Client", "dist")));
 
 // Routes
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/chats", chatRouter);
 
-app.get("/*", function (req, res) {
-  res.sendFile(
-    path.join(__dirname, "../Client/dist/index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
-});
+// app.get("/*", function (req, res) {
+//   res.sendFile(
+//     path.join(__dirname, "..", "..", "Client", "dist"),
+//     function (err) {
+//       if (err) {
+//         res.status(500).send(err);
+//       }
+//     }
+//   );
+// });
 
 // Not found route
 app.all("*", (req, res, next) => {

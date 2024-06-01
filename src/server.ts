@@ -2,9 +2,12 @@ import dotenv from "dotenv";
 import http from "http";
 import path from "path";
 import { Server } from "socket.io";
+import { fileURLToPath } from "url";
 
-const __dirname = path.resolve();
-dotenv.config({ path: path.join(__dirname, ".env") });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, "..", ".env") });
 
 // Handle uncaught exceptions
 process.on("uncaughtException", err => {
@@ -24,7 +27,6 @@ import { connectChatService } from "./services/messages/chats.ws.js";
 connectToDb();
 
 // Mediasoup and WebSocket
-
 const io = new Server(server, {
   path: "/ws",
   cors: { origin: "*" },
