@@ -6,6 +6,7 @@ import {
   getAllUsers,
   getFriends,
   getUser,
+  getUsers,
   updateUserDetails,
   uploadAvatar,
   uploadCoverImage,
@@ -19,7 +20,8 @@ const router = Router();
 // Protect all routes after this middlewares
 router.use(isAuth);
 
-router.get("/", getAllUsers);
+router.get("/", getUsers);
+router.get("/all", getAllUsers);
 router.get("/unknown", getAllUnknownUsers);
 router.get("/friends", getFriends);
 router.post("/addFriend/:friendUsername", addFriend);

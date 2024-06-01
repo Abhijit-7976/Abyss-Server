@@ -122,6 +122,25 @@ export const getAllUsers = catchAsync(async (req: ApiRequest, res, next) => {
   const search = (req.query.search as string) || "";
 
   const users = await User.find({
+    username: new RegExp(search, "i"),
+  })
+    .skip((page - 1) * limit)
+    .limit(limit + 1);
+
+  const isLast = users.length <= limit;
+  if (!isLast) users.pop();
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, { page, isLast, users }, "Users found"));
+});
+
+export const getUsers = catchAsync(async (req: ApiRequest, res, next) => {
+  const page = req.query.page ? +req.query.page : 1;
+  const limit = req.query.limit ? +req.query.limit : 20;
+  const search = (req.query.search as string) || "";
+
+  const users = await User.find({
     $and: [
       { username: new RegExp(search, "i") },
       { _id: { $ne: req.user?._id } },
