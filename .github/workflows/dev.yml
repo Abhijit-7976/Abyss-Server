@@ -12,25 +12,25 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
+      # - name: Setup Node
+      #   uses: actions/setup-node@v4
+      #   with:
+      #     node-version: 20.x
       - name: Build & Deploy
-        env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOSTNAME: ${{ secrets.SSH_HOST }}
-          USER_NAME: ${{ secrets.USER_NAME }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-              cd ~/abyss_app/Server &&
-              git checkout main &&
-              git fetch --all &&
-              git reset --hard origin/main &&
-              git pull origin main &&
-              npm i &&
-              npm run build &&
-              pm2 stop ~/abyss_app/Server/dist/server.js &&
-              pm2 start ~/abyss_app/Server/dist/server.js
-              '
+        uses: appleboy/ssh-action@master
+        # env:
+        #   PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        #   HOSTNAME: ${{ secrets.SSH_HOST }}
+        #   USER_NAME: ${{ secrets.USER_NAME }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USER_NAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ${{ secrets.APP_DIR }} &&
+            git checkout main &&
+            git fetch --all &&
+            git reset --hard origin/main &&
+            git pull origin main &&
+            sudo npm i &&
+            sudo npm run build
