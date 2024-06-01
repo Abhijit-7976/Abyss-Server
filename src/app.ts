@@ -20,6 +20,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 console.log("Environment:", process.env.NODE_ENV);
 
+app.set("trust proxy", 1);
+
 // Global Middlewares
 app.use(
   helmet({
@@ -61,23 +63,14 @@ app.use(express.json({ limit: "16kb" }));
 // Data Sanitization against NoSQL query injection
 app.use(mongoSanitize());
 
-// app.use(express.static(path.join(__dirname, "..", "..", "Client", "dist")));
-
 // Routes
+app.get("/", (req, res) => res.send("Server is running..."));
+
+app.get("/ip", (req, res) => res.send(req.ip));
+
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/chats", chatRouter);
-
-// app.get("/*", function (req, res) {
-//   res.sendFile(
-//     path.join(__dirname, "..", "..", "Client", "dist"),
-//     function (err) {
-//       if (err) {
-//         res.status(500).send(err);
-//       }
-//     }
-//   );
-// });
 
 // Not found route
 app.all("*", (req, res, next) => {
