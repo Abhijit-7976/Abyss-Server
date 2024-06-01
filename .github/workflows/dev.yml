@@ -35,5 +35,5 @@ jobs:
             git pull origin main &&
             npm i &&
             npm run build &&
-            pm2 stop ${{ secrets.APP_DIR }}/dist/server.js &&
-            pm2 start ${{ secrets.APP_DIR }}/dist/server.js
+            pm2 stop ./dist/server.js &&
+            pm2 start ./dist/server.js
