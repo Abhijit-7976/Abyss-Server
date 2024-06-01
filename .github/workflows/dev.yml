@@ -32,5 +32,5 @@ jobs:
             git fetch --all &&
             git reset --hard origin/main &&
             git pull origin main &&
-            sudo npm i &&
-            sudo npm run build
+            npm i &&
+            npm run build
