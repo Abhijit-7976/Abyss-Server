@@ -17,7 +17,7 @@ process.on("uncaughtException", err => {
 });
 
 import app from "./app.js";
-const server = http.createServer(app);
+const httpServer = http.createServer(app);
 
 import { connectToDb } from "./db/abyss.js";
 import { connectMediasoupService } from "./services/mediasoup/mediasoup.ws.js";
@@ -27,10 +27,7 @@ import { connectChatService } from "./services/messages/chats.ws.js";
 connectToDb();
 
 // Mediasoup and WebSocket
-const io = new Server(server, {
-  path: "/ws",
-  cors: { origin: "*" },
-});
+const io = new Server(httpServer, { cors: { origin: "*" } });
 
 connectMediasoupService(io);
 connectChatService(io);
@@ -38,7 +35,7 @@ connectChatService(io);
 // Start server
 const port = process.env.PORT || 3000;
 
-server.listen(port, () => {
+httpServer.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}...`);
 });
 
@@ -46,7 +43,7 @@ server.listen(port, () => {
 process.on("unhandledRejection", (reason: string, promise: Promise<any>) => {
   console.log("💥 Unhandled Rejection Shutting down...");
   console.log(reason);
-  server.close(() => {
+  httpServer.close(() => {
     process.exit(1);
   });
 });
