@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
 import { type Server, type Socket } from "socket.io";
-import { addMessageToDb } from "../../controllers/message.controller.js";
 import messageProducer from "../../kafka/messageProducer.kafka.js";
 import { ChatDocument, IChat } from "../../types/chat.type";
 
