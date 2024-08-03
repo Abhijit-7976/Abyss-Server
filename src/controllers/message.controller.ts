@@ -10,6 +10,10 @@ export const addMessageToDb = async ({
   chat: IChat;
   message: IMessage;
 }) => {
+  if (!chat || !message) {
+    throw new Error("Chat or message not provided");
+  }
+
   const DbChat = await Chat.findById(chat._id).select("+messages");
   console.log({ DbChat });
 

@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { type Server, type Socket } from "socket.io";
 import { addMessageToDb } from "../../controllers/message.controller.js";
+import messageProducer from "../../kafka/messageProducer.kafka.js";
 import { ChatDocument, IChat } from "../../types/chat.type";
 
 const socketToUser = new Map<string, string>();
@@ -24,7 +25,14 @@ export function connectChatService(io: Server) {
       message.sender = sender;
       message.createdAt = new Date();
 
-      addMessageToDb({ chat, message });
+      messageProducer.send({
+        topic: "messages",
+        messages: [
+          {
+            value: JSON.stringify({ chat, message }),
+          },
+        ],
+      });
 
       chat.members.forEach((member: Types.ObjectId) => {
         const memberSocket = userToSocket.get(member.toString());

@@ -1,4 +1,5 @@
 import { Server } from "socket.io";
+import { Room } from "../../models/Room";
 
 export function connectMediasoupService(io: Server) {
   const mediasoupIo = io.of("/mediasoup");
