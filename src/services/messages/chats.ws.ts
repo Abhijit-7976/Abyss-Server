@@ -24,7 +24,7 @@ export function connectChatService(io: Server) {
       message.sender = sender;
       message.createdAt = new Date();
 
-      messageProducer.send({
+      await messageProducer.send({
         topic: "messages",
         messages: [
           {

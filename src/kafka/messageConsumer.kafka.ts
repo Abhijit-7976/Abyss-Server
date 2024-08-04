@@ -14,6 +14,7 @@ export const initMessageConsumer = async () => {
   await messageConsumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       const value = JSON.parse(message.value!.toString());
+      console.log("Received message:", value);
       let retryCount = MAX_RETRY;
       while (retryCount--) {
         try {
