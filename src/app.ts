@@ -12,6 +12,7 @@ import globalErrorHandler from "./controllers/errorController.js";
 import authRouter from "./routes/auth.route.js";
 import chatRouter from "./routes/chat.route.js";
 import userRouter from "./routes/user.route.js";
+import { produceMessage } from "./services/kafka.js";
 import ApiError from "./utils/ApiError.js";
 
 const __filename = fileURLToPath(import.meta.url);
